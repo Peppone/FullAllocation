@@ -26,7 +26,7 @@ if __name__ == '__main__':
 #     lst = v.getNodeList()
 #     print([(elem,lst [elem])for elem in lst])
     alloc=allocator()
-    alloc.firstallocation(v.getNodeList(),n.getNodeList())
-    
+    alloc.firstallocation(v.getNodeList(),n.getNodeList(),policy="bf")
+    alloc.firstallocation(v.getNodeList(),n.getNodeList(),policy="wf")
         
     

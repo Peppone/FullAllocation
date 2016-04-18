@@ -46,6 +46,8 @@ class extractor(object):
                 connector=elem
                 elem = res.pop(0)
                 successive = self.parsedigit(elem, line)
+                if(successive == previous):
+                    raise Exception("Source and destination must be different")
                 if len(res) > 0:
                     elem = res.pop(0)
                 else:
@@ -115,6 +117,8 @@ class extractor(object):
                 connector = elem
                 elem = res.pop(0)
                 successive = self.parsedigit(elem, line)
+                if(successive == previous):
+                    raise Exception("Source and destination must be different")
                 if len(res) > 0:
                     elem = res.pop(0)
                 else:
