@@ -12,12 +12,15 @@ import sys
 class extractor(object):
 
     def vmgraphextractor(self,filename, defaultCpu = 10,defaultBw=1e6):
+
         fhandle = open (filename, 'r')
         graph = dict();
         vmDict = {}
         for line in fhandle:
             previous = None
             successive = None
+            if line.isspace():
+                continue
             res = re.findall('\s*([0-9]+|<->|<-|->|\[[^\]]*\])\s*', line)
             if res is None:
                 continue
@@ -150,6 +153,26 @@ class extractor(object):
         net.addNodeList(typeDict)
         return net
     
+    def demandgeneration(self,vmdict, allocation):
+        ''' Result: list of
+         ((vmsrc,serversrc),(vmdest,serverdest),bw)'''
+        demandlist=[]
+        for srcvm in vmdict:
+            adjlist = vmdict[srcvm]
+            for destvm in adjlist:
+                bw = adjlist[destvm]
+                demandlist.append(((srcvm,allocation[srcvm][0]),(destvm,allocation[destvm][0]),bw))
+        print(demandlist)
+        return demandlist
+    def removesameserverdemands(self,demandlist):
+        newdemandlist = demandlist
+        for demand in demandlist:
+            srcsrv=demand[0][1]
+            dstsrv=demand[1][1]
+            if srcsrv == dstsrv:
+                newdemandlist.remove(demand)
+        return newdemandlist
+                
     def addtodictionary(self,elem,eType,dType,line):
         if eType == None:
             return
@@ -239,15 +262,3 @@ class extractor(object):
             arg = None
         return arg
         pass
-    
-if __name__ == '__main__':
-    extract = extractor()
-    myd = {}
-    g = extract.adjextractor('/home/peppone/git/FullAllocation/src/main/topology.txt')
-    for vertex in g:
-        res = '' + str(vertex) + ' ->'
-        vertices = g.get(vertex)
-        print(vertex, vertices)
-        for otherv in vertices:
-            res = res + ' ' + str(otherv) + ';' 
-        print (res)
